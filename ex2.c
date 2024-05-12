@@ -1,144 +1,183 @@
 #include <stdio.h>
 #include <ctype.h>
 #include <string.h>
-#define TF 12
-int main()
+
+#define TF 3
+
+int main ()
 {
-    int vetVoo[TF], vetLugares[TF], i, opcao, pos, num;
-    char vetOrigem[TF][30], vetDestino[TF][30], op, op2, aux;
+	//Defini鈬o das variaveis
+	int vetNum[TF],vetLugares[TF],num,pos;
+	char vetOrigem[TF][20],vetDestino[TF][20],op,aux[20],op2;
+	
+	//Preenchimento dos vetores sem utiliza鈬o de TL
+	for(int i=0;i<TF;i++)
+	{
+		printf("Digite o numero do voo\n");
+		scanf("%d",&vetNum[i]);
+		printf("Digite quantos lugares tem\n");
+		scanf("%d",&vetLugares[i]);
+		printf("Digite a origem do voo\n");
+		fflush(stdin);
+		gets(vetOrigem[i]);
+		printf("Digite o destino do voo\n");
+		fflush(stdin);
+		gets(vetDestino[i]);
+	}
+	
+	//Entra Lido
+	printf("Digite a opcao que deseja\n");
+	printf("CONSULTAR [C]\nRESERVAR[R]\nSAIR[S]\n");
+	fflush(stdin);//Limpar o buffer
+	scanf("%c",&op);
+	op=toupper(op);
+	
+	//Repeticao do menu principal
+	while(op!='S'){
 
-    for(i=0;i<TF;i++){
-        printf("Digite o numero do voo\n");
-        scanf("%d", &vetVoo[i]);
-        printf("Digite os lugares disponiveis nesse voo\n");
-        scanf("%d", &vetLugares[i]);
-        printf("Digite a origem desse voo\n");
-        fflush(stdin);
-        gets(vetOrigem[i]);
-        printf("Digite o destino desse voo\n");
-        fflush(stdin);
-        gets(vetDestino[i]);
-    }
+		//Verificando qual opera鈬o ele quer fazer
+		switch(op)
+		{
+			//Caso for consulta
+			case 'C':
+				printf("----------------------\nDeseja consultar pelo o que?\nORIGEM[O]\nDESTINO[D]\nNUMERO[N]\n");//Pergunto o que ele quer consultar
+				fflush(stdin);//limpo o buffer
+				scanf("%c",&op2);
+				op2=toupper(op2);
+				//Verificando qual tipo de consulta ele quer fazer
+				switch(op2)
+				{
+					//Caso for pela origem
+					case 'O':
+						printf("Digite a origem para consultar\n");
+						fflush(stdin);
+						gets(aux);//Recebo a origem que ele digitar
+						
+						//Busco a origem no meu vetor de strings
+						pos=0;
+						while(pos<TF && strcmp(aux,vetOrigem[pos])!=0)
+							pos++;
+							
+						//Verifico se achou o voo
+						if(pos<TF)
+						{
+							printf("Voo de numero [%d]\nOrigem [%s]\nDestino [%s]\nLugares Disponiveis [%d]\n----------------\n",vetNum[pos],vetOrigem[pos],vetDestino[pos],vetLugares[pos]);
+						}
+						else//Caso nao achou o voo
+						{
+							printf("Voo com essa origem nao encontrado\n-------------------\n");
+						}
+						
+						break;
+					//Caso for por destino
+					case 'D':
+						printf("Digite o destino para consultar\n");
+						fflush(stdin);
+						gets(aux);//Recebo o destino
+						
+						//Busco o destino no vetor de destinos
+						pos=0;
+						while(pos<TF&& strcmp(aux,vetDestino[pos])!=0)
+							pos++;
+						
+						//Verifico se achou o voo
+						if(pos<TF)
+						{
+							printf("Voo de numero [%d]\nOrigem [%s]\nDestino [%s]\nLugares Disponiveis [%d]\n----------------\n",vetNum[pos],vetOrigem[pos],vetDestino[pos],vetLugares[pos]);
+						}
+						else//Caso nao achou
+						{
+							printf("Voo com essa origem nao encontrado\n-------------------\n");
+						}
+						
+						break;
+						
+					//Caso for pelo numero do voo
+					case 'N':
+						printf("Digite o numero do voo para consultar\n");
+						scanf("%d",&num);//Recebo o numero
+						
+						//Busco o numero no vetor de numeros de voo
+						pos=0;
+						while(pos<TF&&num!=vetNum[pos])
+							pos++;
+						
+						//Verifico se achou
+						if(pos<TF)
+						{
+							printf("Voo de numero [%d]\nOrigem [%s]\nDestino [%s]\nLugares Disponiveis [%d]\n----------------\n",vetNum[pos],vetOrigem[pos],vetDestino[pos],vetLugares[pos]);
+						}
+						else//Caso nao achou
+						{
+							printf("Voo com essa origem nao encontrado\n-------------------\n");
+						}
+						break;
+				}
+				break;
+			//Caso queira reservar um voo
+			case 'R':
+					printf("----------\nDigite o numero do voo que deseja reservar um lugar\n");
+					scanf("%d",&num);//Leio o numero do voo
+					
+					//Busco o numero no vetor de numeros de voo
+					pos=0;
+					while(pos<TF&&num!=vetNum[pos])
+						pos++;
+					
+					//Verifico se achou
+					if(pos<TF)
+					{
+						//Verifico se ainda tem lugares disponiveis
+						if(vetLugares[pos]>0)
+						{
+							//Printo todas as informa鋏es sobre o voo
+							printf("Voo encontrado\n");
+							printf("Lugares Disponiveis : %d\n",vetLugares[pos]);
+							printf("Origem : %s\n",vetOrigem[pos]);
+							printf("Destino : %s\n",vetDestino[pos]);
+							
+							//Pergunto se ele realmente quer reservar
+							printf("Confirma reserva?[S][N]\n");
+							fflush(stdin);
+							scanf("%c",&op2);//Leio a opera鈬o
+							//Caso queira reservar
+							if(toupper(op2)=='S')
+							{
+								printf("Reserva comprada com sucesso\n");
+								vetLugares[pos]--;//Retiro um lugar desse voo
+							}
+							else//Cancelo a reserva
+							{
+								printf("Reserva cancelada\n");
+							}
+						}
+						else//Caso nao tenha lugares
+						{
+							printf("Voo lotado\n");
+						}
 
-    printf("Digite o que deseja fazer\n");
-    printf("[C] - Consultar\n[R] EFETUAR RESERVA\n[S] - SAIR");
-    fflush(stdin);
-    scanf("%c", &op);
-    while(toupper(op)!='S')
-    {
-        switch(op)
-        {
-            case 'C':
-            printf("Digite pel o que deseja consultar\n");
-            printf("[O] - ORIGEM\n[N] - NUMERO DO VOO\n[D]-DESTINO\n");
-            fflush(stdin);
-            scanf("%c", &op2);
-            switch(op2)
-            {
-                case 'O':
-                printf("Digite a origem que deseja buscar\n");
-                fflush(stdin);
-                gets(aux);
-
-                pos=0;
-                while(pos<TF && strcmp(aux, vetOrigem[pos])!=0)
-                    pos++;
-                    if(pos<TF)
-                    {
-                        printf("Dados do voo\n");
-                        printf("Numero: %d\n", vetVoo[pos]);
-                        printf("Lugares: %d\n", vetLugares[pos]);
-                        printf("Origem: %s\n", vetOrigem[pos]);
-                        printf("Destino: %s\n", vetDestino[pos]);
-                    }
-                    else
-                    {
-                        printf("Voo nao encontrado\n");
-                    }
-                break;
-                case 'D':
-                printf("Digite o destino que deseja buscar\n");
-                fflush(stdin);
-                gets(aux);
-
-                pos=0;
-                while(pos<TF && strcmp(aux, vetDestino[pos])!=0)
-                    pos++;
-                if(pos<TF)
-                {
-                    printf("Dados do voo\n");
-                    printf("Numero: %d\n", vetVoo[pos]);
-                    printf("Lugares: %d\n", vetLugares[pos]);
-                    printf("Origem: %s\n", vetOrigem[pos]);
-                    printf("Destino: %s\n", vetDestino[pos]);
-                }
-                else
-                {
-                    printf("Voo nao encontrado\n");
-                }
-                break;
-                case 'N':
-                printf("Digite o numero do voo que deseja buscar\n");
-                scanf("%d", &num);
-
-                pos=0;
-                while(pos<TF && num!=vetVoo[pos])
-                    pos++;
-                if(pos<TF)
-                {
-                    printf("Dados do voo\n");
-                    printf("Numero: %d\n", vetVoo[pos]);
-                    printf("Lugares: %d\n", vetLugares[pos]);
-                    printf("Origem: %s\n", vetOrigem[pos]);
-                    printf("Destino: %s\n", vetDestino[pos]);
-                }
-                else
-                {
-                    printF("Voo nao encontrado\n");
-                }
-                break;
-            }
-                break;
-            case 'R':
-                printf("Digite o numero do voo que deseja reservar\n");
-                scanf("%d", &num);
-
-                pos=0;
-                while(pos<TF && num!=vetVoo[pos])
-                    pos++;
-                if(pos<TF)
-                {
-                    if(vetLugares[pos]>0)
-                    {
-                        printF("Voo encontrado\n");
-                        printf("Deseja realiar a reserva? [S] [N]");
-                        scanf("%c", &op2);
-                        if(toupper(op2)=='S')
-                        {
-                            printf("Reserva confirmada\n");
-                            vetLugares[pos]--;
-                        }
-                        else
-                        {
-                            printf("reserva cancelada");
-                        }
-                    }
-                    else
-                    {
-                        printf("Voo lotado\n");
-                    }
-                }
-                else
-                {
-                    printf("Voo inexistente\n");
-                }
-                break;
-            default:
-                printf("ERRO - OPCAO INVALIDA\n");
-        }
-        printf("Digite o que deseja fazer\n");
-    printf("[C] - Consultar\n[R] EFETUAR RESERVA\n[S] - SAIR");
-    fflush(stdin);
-    scanf("%c", &op);
-    }
-}
+					}
+					else//Caso nao tenha encontrado o numero do voo
+					{
+						printf("Voo nao encontrado\n");
+					}
+					
+					
+				break;
+				
+			//Caso a pessoa tenha digitado uma opcao invalida
+			default:
+				printf("ERRO, OPCAO INVALIDA\n");
+				break;
+		}
+		//Sai Lido
+		printf("Digite a opcao que deseja\n");
+		printf("CONSULTAR [C]\nRESERVAR[R]\nSAIR[S]\n");
+		fflush(stdin);
+		scanf("%c",&op);
+		op=toupper(op);		
+	}
+	
+	return 0;
+	
+}//end
